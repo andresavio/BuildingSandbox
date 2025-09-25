@@ -3,191 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crônicas do Fundador: Jogo de Construção de Mundo</title>
-    <link rel="stylesheet" href="style.css"> 
+    <title>Construtor de Mundos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .story-text {
+            background-image: url('http://static.photos/vintage/1024x576/42');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+        }
+        .choice-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
-<body>
-
-    <header>
-        <h1>Crônicas do Fundador</h1>
-        <p>Decisões que forjam a realidade.</p>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div id="vanta-bg" class="fixed inset-0 -z-10 opacity-30"></div>
+    
+    <header class="py-6 px-4 sm:px-6 lg:px-8 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
+                <i data-feather="compass" class="inline mr-2"></i> Construtor de Mundos
+            </h1>
+            <button id="new-world-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center">
+                <i data-feather="plus" class="mr-2"></i> Novo Mundo
+            </button>
+        </div>
     </header>
 
-    <main class="game-container">
-        
-        <aside id="stats-panel">
-            <h2>🌍 Detalhes do Mundo</h2>
-            <div id="stats-content">
-                <p><strong>Nome:</strong> <span id="stat-nome">[Aguardando]</span></p>
-                <p><strong>População:</strong> <span id="stat-populacao">0</span></p>
-                <p><strong>Recursos:</strong> <span id="stat-recursos">Escassos</span></p>
-                <p><strong>Cultura:</strong> <span id="stat-cultura">Não definida</span></p>
-                <hr>
-                <p class="impact-indicator">💎 Nível de Impacto: <span id="stat-impacto">0</span></p>
+    <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden mb-8">
+            <div class="story-text p-8 min-h-64 flex items-center justify-center bg-gray-900 bg-opacity-70">
+                <div id="story-display" class="text-center text-lg leading-relaxed">
+                    <h2 class="text-3xl font-bold mb-6">Bem-vindo ao Construtor de Mundos</h2>
+                    <p class="mb-6">Você está prestes a criar um universo único. Cada decisão moldará a história, os personagens e o destino deste mundo.</p>
+                    <button id="start-game-btn" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium">
+                        Começar sua Jornada
+                    </button>
+                </div>
             </div>
-        </aside>
+        </div>
 
-        <section class="story-area">
-            
-            <div id="story-text">
-                <p>Pressione "Iniciar Criação" para começar sua jornada como Fundador(a).</p>
+        <div id="choices-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <!-- Choices will be dynamically inserted here -->
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+                <i data-feather="map" class="mr-2"></i> Seu Mundo Atual
+            </h3>
+            <div id="world-info" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h4 class="font-medium text-blue-400 mb-2">Geografia</h4>
+                    <p id="geography-info" class="text-sm">Ainda não definido</p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h4 class="font-medium text-purple-400 mb-2">Cultura</h4>
+                    <p id="culture-info" class="text-sm">Ainda não definido</p>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg">
+                    <h4 class="font-medium text-green-400 mb-2">História</h4>
+                    <p id="history-info" class="text-sm">Ainda não definido</p>
+                </div>
             </div>
-
-            <div id="choice-buttons">
-                <button onclick="startGame()">Iniciar Criação</button>
-            </div>
-
-        </section>
-
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Jogo de Narrativa Interativa</p>
+    <footer class="py-4 px-4 sm:px-6 lg:px-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+        <p>© 2023 Construtor de Mundos - Todos os direitos reservados</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
     <script>
-        // 1. ESTADO GLOBAL DO JOGO (Estatísticas do Mundo)
-        let gameState = {
-            nome: "[Desconhecido]",
-            populacao: 0,
-            recursos: "Nenhum",
-            cultura: "Vazia",
-            impacto: 0,
-            currentScene: 'start_game' 
+        // Initialize animations and effects
+        AOS.init();
+        feather.replace();
+        
+        // Background effect
+        VANTA.GLOBE({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x3f83f8,
+            backgroundColor: 0x111827
+        });
+
+        // Game state
+        const gameState = {
+            world: {
+                name: "",
+                geography: "",
+                culture: "",
+                history: "",
+                factions: [],
+                currentEvent: null,
+                timeline: []
+            },
+            playerChoices: []
         };
 
-        // 2. FUNÇÕES DE EXIBIÇÃO DA INTERFACE (DOM)
-        function updateDisplay(storyText, choices) {
-            document.getElementById('story-text').innerHTML = `<p>${storyText}</p>`;
+        // Story elements
+        const storyElements = {
+            beginnings: [
+                {
+                    title: "O Nascimento de um Mundo",
+                    text: "No princípio, havia apenas o vazio. Então, você moldou a primeira pedra. Como será este novo mundo?",
+                    choices: [
+                        { text: "Um continente vasto com diversos biomas", effect: { geography: "Um grande continente com florestas, montanhas e desertos" } },
+                        { text: "Um arquipélago de ilhas misteriosas", effect: { geography: "Um conjunto de ilhas diversas, cada uma com seu próprio ecossistema" } },
+                        { text: "Uma terra dividida por um grande rio", effect: { geography: "Uma terra fértil cortada por um rio colossal, criando duas regiões distintas" } }
+                    ]
+                }
+            ],
+            cultures: [
+                {
+                    title: "Os Primeiros Habitantes",
+                    text: "Com a terra formada, seres começam a surgir. Que tipo de civilização irá florescer nesta terra?",
+                    choices: [
+                        { text: "Uma sociedade guerreira valorizando honra", effect: { culture: "Uma cultura marcial onde o combate e a honra são centrais" } },
+                        { text: "Um povo místico conectado à natureza", effect: { culture: "Druidas e xamãs guiam uma sociedade em harmonia com o mundo natural" } },
+                        { text: "Comerciantes astutos construindo cidades", effect: { culture: "Grandes cidades-estado competem pelo controle de rotas comerciais" } }
+                    ]
+                }
+            ],
+            conflicts: [
+                {
+                    title: "Tempos de Conflito",
+                    text: "A paz nunca dura para sempre. Que tipo de desafio seu mundo enfrentará?",
+                    choices: [
+                        { text: "Uma guerra entre reinos rivais", effect: { history: "Uma grande guerra moldou as fronteiras e relações entre as nações" } },
+                        { text: "Uma praga misteriosa assola a terra", effect: { history: "Uma doença terrível deixou cicatrizes profundas na população" } },
+                        { text: "O surgimento de uma nova religião", effect: { history: "Um profeta surgiu, pregando uma nova fé que divide a sociedade" } }
+                    ]
+                }
+            ]
+        };
+
+        // DOM elements
+        const storyDisplay = document.getElementById('story-display');
+        const choicesContainer = document.getElementById('choices-container');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const newWorldBtn = document.getElementById('new-world-btn');
+        const geographyInfo = document.getElementById('geography-info');
+        const cultureInfo = document.getElementById('culture-info');
+        const historyInfo = document.getElementById('history-info');
+
+        // Game functions
+        function displayStorySegment(segment) {
+            storyDisplay.innerHTML = `
+                <h2 class="text-2xl font-bold mb-4 fade-in">${segment.title}</h2>
+                <p class="mb-6 fade-in">${segment.text}</p>
+            `;
             
-            const choicesDiv = document.getElementById('choice-buttons');
-            choicesDiv.innerHTML = ''; // Limpa botões anteriores
-
-            choices.forEach(choice => {
-                const button = document.createElement('button');
-                button.textContent = choice.text;
-                button.onclick = () => handleChoice(choice.nextScene); 
-                choicesDiv.appendChild(button);
+            choicesContainer.innerHTML = '';
+            segment.choices.forEach((choice, index) => {
+                const choiceBtn = document.createElement('button');
+                choiceBtn.className = 'choice-btn bg-gray-700 hover:bg-gray-600 p-4 rounded-lg transition-all duration-300 ease-in-out fade-in';
+                choiceBtn.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3">${index + 1}</span>
+                        <span>${choice.text}</span>
+                    </div>
+                `;
+                choiceBtn.addEventListener('click', () => makeChoice(choice));
+                choicesContainer.appendChild(choiceBtn);
             });
-
-            // Atualiza o Painel de Estatísticas
-            document.getElementById('stat-nome').textContent = gameState.nome;
-            document.getElementById('stat-populacao').textContent = gameState.populacao.toLocaleString();
-            document.getElementById('stat-recursos').textContent = gameState.recursos;
-            document.getElementById('stat-cultura').textContent = gameState.cultura;
-            document.getElementById('stat-impacto').textContent = gameState.impacto;
         }
 
-        // 3. LÓGICA DO JOGO
-        function startGame() {
-            const nomeMundo = prompt("Em primeiro lugar, qual é o nome do mundo que você irá fundar?");
+        function makeChoice(choice) {
+            gameState.playerChoices.push(choice.text);
             
-            if (nomeMundo && nomeMundo.trim() !== "") {
-                gameState.nome = nomeMundo.trim();
-                gameState.populacao = 100; // População inicial
-                gameState.currentScene = 'geography_choice';
-                loadScene(gameState.currentScene);
+            // Apply effects
+            if (choice.effect.geography) {
+                gameState.world.geography = choice.effect.geography;
+                geographyInfo.textContent = choice.effect.geography;
+            }
+            if (choice.effect.culture) {
+                gameState.world.culture = choice.effect.culture;
+                cultureInfo.textContent = choice.effect.culture;
+            }
+            if (choice.effect.history) {
+                gameState.world.history = choice.effect.history;
+                historyInfo.textContent = choice.effect.history;
+            }
+            
+            // Determine next story segment
+            if (!gameState.world.geography) {
+                displayStorySegment(storyElements.beginnings[0]);
+            } else if (!gameState.world.culture) {
+                displayStorySegment(storyElements.cultures[0]);
+            } else if (!gameState.world.history) {
+                displayStorySegment(storyElements.conflicts[0]);
             } else {
-                alert("O mundo precisa de um nome, Fundador(a)! Tente novamente.");
-                loadScene('start_game'); 
+                // World creation complete
+                storyDisplay.innerHTML = `
+                    <h2 class="text-3xl font-bold mb-6 fade-in">Seu Mundo Está Completo!</h2>
+                    <p class="mb-6 fade-in">Você criou um mundo único com ${gameState.world.geography.toLowerCase()}, onde ${gameState.world.culture.toLowerCase()}. Sua história foi marcada por ${gameState.world.history.toLowerCase()}.</p>
+                    <button id="explore-more-btn" class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-medium fade-in">
+                        Explorar Mais
+                    </button>
+                `;
+                document.getElementById('explore-more-btn').addEventListener('click', () => {
+                    alert('Recursos adicionais serão implementados em atualizações futuras!');
+                });
             }
         }
 
-        function handleChoice(nextSceneID) {
-            gameState.currentScene = nextSceneID;
-            loadScene(nextSceneID);
+        function startNewWorld() {
+            gameState.world = {
+                name: "",
+                geography: "",
+                culture: "",
+                history: "",
+                factions: [],
+                currentEvent: null,
+                timeline: []
+            };
+            gameState.playerChoices = [];
+            
+            geographyInfo.textContent = "Ainda não definido";
+            cultureInfo.textContent = "Ainda não definido";
+            historyInfo.textContent = "Ainda não definido";
+            
+            displayStorySegment(storyElements.beginnings[0]);
         }
 
-        function loadScene(sceneID) {
-            let storyText = "";
-            let choices = [];
+        // Event listeners
+        startGameBtn.addEventListener('click', startNewWorld);
+        newWorldBtn.addEventListener('click', startNewWorld);
 
-            switch(sceneID) {
-                case 'start_game':
-                    // Reseta as estatísticas para um novo jogo
-                    if (gameState.nome !== "[Desconhecido]") {
-                        gameState.nome = "[Desconhecido]";
-                        gameState.populacao = 0;
-                        gameState.recursos = "Nenhum";
-                        gameState.cultura = "Vazia";
-                        gameState.impacto = 0;
-                    }
-                    storyText = `Você está no Limiar do Vazio. Sua primeira tarefa é conceber o cosmos. Pressione "Iniciar Criação" para começar.`;
-                    choices = [
-                        { text: "Iniciar Criação", nextScene: 'geography_choice' }
-                    ];
-                    break;
-
-                // --- CENA 1: GEOGRAFIA ---
-                case 'geography_choice':
-                    storyText = `Com o nome do mundo de **${gameState.nome}** estabelecido, você deve agora moldar sua fundação física. Qual será a característica geográfica dominante?`;
-                    choices = [
-                        { 
-                            text: "A. O Arquipélago da Névoa: Ilhas vulcânicas envoltas em bruma. Mar abundante, terra escassa.", 
-                            nextScene: 'consequence_archipelago' 
-                        },
-                        { 
-                            text: "B. A Cordilheira Sombria: Montanhas imponentes e vales profundos. Riqueza em minérios, clima severo.", 
-                            nextScene: 'consequence_mountains' 
-                        },
-                        { 
-                            text: "C. As Estepes do Vento: Campos infinitos. Solo fértil para agricultura, mas sem barreiras naturais.", 
-                            nextScene: 'consequence_steppes' 
-                        }
-                    ];
-                    break;
-
-                // --- CONSEQÜÊNCIAS DA GEOGRAFIA ---
-                case 'consequence_archipelago':
-                    gameState.recursos = "Marítimos (Pérolas, Peixes Raros)";
-                    gameState.populacao += 50;
-                    gameState.impacto += 10;
-                    storyText = `O Arquipélago da Névoa é criado. Seu povo se torna **navegador** por necessidade. A cultura será voltada para o mar. Eles serão mestres na navegação, mas vulneráveis a grandes tempestades e à falta de madeira para construção.`;
-                    choices = [
-                        { text: "Próxima Decisão: Escolher a Filosofia de Vida", nextScene: 'philosophy_choice' }
-                    ];
-                    break;
-
-                case 'consequence_mountains':
-                    gameState.recursos = "Minérios (Ferro, Gemas)";
-                    gameState.populacao += 20;
-                    gameState.impacto += 15;
-                    storyText = `A Cordilheira Sombria se eleva. Seu povo se torna **minerador e construtor de fortalezas**. Eles vivem isolados em cidades escavadas nas rochas, com acesso a materiais de guerra, mas a agricultura é quase impossível.`;
-                    choices = [
-                        { text: "Próxima Decisão: Escolher a Filosofia de Vida", nextScene: 'philosophy_choice' }
-                    ];
-                    break;
-
-                case 'consequence_steppes':
-                    gameState.recursos = "Agrícolas (Grãos, Pecuária)";
-                    gameState.populacao += 100;
-                    gameState.impacto += 8;
-                    storyText = `As Estepes do Vento se estendem. Seu povo se torna **pastor e agricultor**. A terra os recompensa com fartura, mas a falta de barreiras significa que a defesa militar será a maior prioridade.`;
-                    choices = [
-                        { text: "Próxima Decisão: Escolher a Filosofia de Vida", nextScene: 'philosophy_choice' }
-                    ];
-                    break;
-                    
-                // --- CENA 2: FILOSOFIA DE VIDA (CULTURA) ---
-                case 'philosophy_choice':
-                    storyText = `A fundação de **${gameState.nome}** está lançada. Qual filosofia de vida guiará a cultura de seu povo?`;
-                    choices = [
-                        { text: "D. A Tradição da Memória: Valorizar a história e os antepassados. (Cultura conservadora)", nextScene: 'consequence_memory' },
-                        { text: "E. O Culto à Inovação: Buscar incessantemente novas tecnologias e conhecimentos. (Cultura progressista)", nextScene: 'consequence_innovation' }
-                    ];
-                    break;
-
-                // --- CONSEQÜÊNCIAS DA FILOSOFIA ---
-                case 'consequence_memory':
-                    gameState.cultura = "Conservadora/Tradicionalista";
-                    gameState.impacto += 5;
-                    storyText = `A Tradição da Memória se estabelece. Seu povo honrará o passado, o que garante a coesão social, mas pode levar à estagnação tecnológica e à desconfiança de estrangeiros.`;
-                    choices = [
-                        { text: "Fim do Capítulo 1: Analisar o Mapa", nextScene: 'end_of_chapter_1' }
-                    ];
-                    break;
-                    
-                case 'consequence_innovation':
-                    gameState.cultura = "Progressista/Científica";
-                    gameState.impacto += 7;
-                    storyText = `O Culto à Inovação domina. Seu
+        // Initialize
+        feather.replace();
+    </script>
+</body>
+</html>
