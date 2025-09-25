@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crônicas do Fundador: Jogo de Construção de Mundo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Crônicas do Fundador</h1>
+        <p>Decisões que forjam a realidade.</p>
+    </header>
+
+    <main class="game-container">
+        
+        <aside id="stats-panel">
+            <h2>🌍 Detalhes do Mundo</h2>
+            <div id="stats-content">
+                <p><strong>Nome:</strong> <span id="stat-nome">[Aguardando]</span></p>
+                <p><strong>População:</strong> <span id="stat-populacao">0</span></p>
+                <p><strong>Recursos:</strong> <span id="stat-recursos">Escassos</span></p>
+                <p><strong>Cultura:</strong> <span id="stat-cultura">Não definida</span></p>
+                <hr>
+                <p class="impact-indicator">💎 Nível de Impacto: <span id="stat-impacto">0</span></p>
+            </div>
+        </aside>
+
+        <section class="story-area">
+            
+            <div id="story-text">
+                <p>Pressione "Iniciar Jogo" para começar sua jornada como Fundador(a).</p>
+            </div>
+
+            <div id="choice-buttons">
+                <button onclick="startGame()">Iniciar Jogo</button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Jogo de Narrativa Interativa</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
